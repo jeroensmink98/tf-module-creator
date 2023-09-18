@@ -1,0 +1,39 @@
+name: Build Go App
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.20
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install Dependencies
+      run: go mod download
+
+    - name: Build the app
+      run: go build -o tf-module-builder
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: tf-module-builder
+        path: ./tf-module-builder

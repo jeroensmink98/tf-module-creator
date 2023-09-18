@@ -26,9 +26,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-
 
-    - name: Install Dependencies
-      run: go mod download
-
     - name: Build the app
       run: go build -o tf-module-builder
 
